@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Дизайнеры — Cristallo</title>
+<link rel="preload" href="assets/fonts/prata-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/golos-text-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css?v=9">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<div class="sheet">
+<header class="site-header">
+  <div class="wrap header-inner">
+    <button class="icon-button" type="button" aria-label="Меню" aria-expanded="false" aria-controls="nav-drawer">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h18M3 16h18"/></svg>
+    </button>
+    <nav class="nav" aria-label="Основное меню">
+      <div class="nav-group nav-group--left"><a href="catalog.html">Каталог</a><a href="designers.html">Дизайнеры</a></div>
+      <a class="mark" href="index.html">
+        <!-- знак: контур и три группы граней — при открытии страницы они прорисовываются по очереди (CSS .mk-*) -->
+        <svg class="mark-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path class="mk-o" d="M11.5 8h13l5.5 6.5L18 29.5 6 14.5z"/><g class="mk-l1"><g class="mk-h1"><path class="mk-f1" d="M11.5 8l3 6.5L18 8l3.5 6.5 3-6.5"/></g></g><g class="mk-l2"><g class="mk-h2"><path class="mk-f2" d="M6 14.5h24"/></g></g><g class="mk-l3"><g class="mk-h3"><path class="mk-f3" d="M14.5 14.5 18 29.5l3.5-15"/></g></g></svg>
+        <span class="mark-name" data-shop-name>Cristallo</span>
+      </a>
+      <div class="nav-group nav-group--right"><a href="#contacts">Контакты</a><a href="cart.html" class="cart-link">Корзина <span class="cart-count" data-cart-count data-empty="true">0</span></a></div>
+    </nav>
+    <a class="icon-button" href="cart.html" aria-label="Корзина">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1.2 11.5H6.2z"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5"/></svg>
+      <span class="cart-count" data-cart-count data-empty="true">0</span>
+    </a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="page-head wrap">
+    <nav class="crumbs" aria-label="Навигация"><a href="index.html">Главная</a> / Дизайнеры</nav>
+    <h1>Дизайнеры</h1>
+    <p class="page-lead">Предметы Arnolfo di&nbsp;Cambio придумывали дизайнеры нескольких поколений — от&nbsp;миланских классиков до&nbsp;наших современников. Выберите имя — покажем его работы в&nbsp;каталоге.</p>
+  </section>
+
+  <!-- карточки с печатями собирает designers.js: монограмма, имя латиницей по верхней дуге, годы по нижней -->
+  <section class="dz-band sand" aria-label="Список дизайнеров">
+    <div class="wrap">
+      <div class="dz-sum" data-designers-sum></div>
+      <ul class="dz-grid" data-designers></ul>
+      <div class="dz-foot"><a class="btn btn--outline" href="catalog.html">Весь каталог</a></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" id="contacts">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-about">
+        <svg class="mark-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 8h13l5.5 6.5L18 29.5 6 14.5z"/><path d="M6 14.5h24M11.5 8l3 6.5L18 8l3.5 6.5 3-6.5M14.5 14.5 18 29.5l3.5-15"/></svg>
+        <p class="footer-tagline">Итальянский хрусталь ручной работы и&nbsp;фарфор домов моды</p>
+      </div>
+      <nav class="footer-brands" aria-label="Бренды">
+        <h2 class="footer-title">Бренды</h2>
+        <ul class="footer-list" data-footer-brands>
+          <li><a href="catalog.html?brand=Arnolfo%20di%20Cambio">Arnolfo di Cambio</a></li>
+          <li><a href="catalog.html?brand=Roberto%20Cavalli">Roberto Cavalli</a></li>
+          <li><a href="catalog.html?brand=Missoni">Missoni</a></li>
+          <li><a href="catalog.html?brand=Karl%20Lagerfeld">Karl Lagerfeld</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-shop" aria-label="Магазин">
+        <h2 class="footer-title">Магазин</h2>
+        <ul class="footer-list">
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="designers.html">Дизайнеры</a></li>
+          <li><a href="cart.html">Корзина</a></li>
+        </ul>
+      </nav>
+      <div class="footer-contacts">
+        <h2 class="footer-title">Контакты</h2>
+        <div data-contacts></div>
+        <p class="footer-note">Заказ оформляется в&nbsp;корзине. После отправки мы позвоним, чтобы его подтвердить.</p>
+      </div>
+    </div>
+    <!-- имя магазина одной тонкой линией; раз в 14 секунд по буквам проходит свет -->
+    <a class="footer-mark" href="index.html" aria-label="На главную">
+      <svg viewBox="0 0 1000 104" aria-hidden="true">
+        <defs>
+          <clipPath id="ft-clip"><text x="0" y="92" textLength="1000" lengthAdjust="spacing" font-family="Prata, Georgia, serif" font-size="100" data-shop-mark>CRISTALLO</text></clipPath>
+          <linearGradient id="ft-glow" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.5" stop-color="#fff" stop-opacity="0.06"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        </defs>
+        <text x="0" y="92" textLength="1000" lengthAdjust="spacing" font-family="Prata, Georgia, serif" font-size="100" data-shop-mark>CRISTALLO</text>
+        <g clip-path="url(#ft-clip)"><rect class="ft-sheen" x="-300" y="-10" width="300" height="124" fill="url(#ft-glow)"/></g>
+      </svg>
+    </a>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> <span data-shop-name>Cristallo</span></span>
+      <span>Каталог обновляется каждую неделю</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+<div class="drawer" id="nav-drawer" popover="manual">
+  <div class="drawer-scroller">
+    <nav class="drawer-sheet" tabindex="-1" aria-label="Меню">
+      <div class="drawer-head">
+        <span class="mark-name" data-shop-name>Cristallo</span>
+        <button class="drawer-close" type="button" data-drawer-close aria-label="Закрыть меню"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <ul class="drawer-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="catalog.html">Каталог</a></li>
+        <li><a href="designers.html">Дизайнеры</a></li>
+        <li><a href="cart.html">Корзина</a></li>
+        <li><a href="#contacts">Контакты</a></li>
+      </ul>
+      <div></div>
+    </nav>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="assets/js/common.js?v=9"></script>
+<script src="assets/js/designers.js?v=9"></script>
+</body>
+</html>
