@@ -428,6 +428,17 @@
   function bindGallery(p) {
     var main = document.getElementById('main-img');
     var thumbs = root.querySelectorAll('.pdp-thumb');
+    // радужный блик проходит по фото один раз, когда оно загрузилось (и после каждой смены фото)
+    var frame = main && main.parentNode;
+    var shine = function () {
+      if (!frame) return;
+      frame.classList.remove('is-shown');
+      void frame.offsetWidth;
+      frame.classList.add('is-shown');
+    };
+    if (main) {
+      if (main.complete && main.naturalWidth) shine(); else main.addEventListener('load', shine, { once: true });
+    }
     thumbs.forEach(function (b) {
       b.addEventListener('click', function () {
         var im = p.images[+b.getAttribute('data-i')];
@@ -438,7 +449,11 @@
         // мягкая смена фото: старое гаснет, новое проявляется, когда загрузится
         main.classList.add('is-swapping');
         setTimeout(function () {
-          var done = function () { main.classList.remove('is-swapping'); };
+          var done = function () {
+            if (!main.classList.contains('is-swapping')) return;
+            main.classList.remove('is-swapping');
+            shine();
+          };
           main.addEventListener('load', done, { once: true });
           main.src = im.src;
           if (main.complete) done();

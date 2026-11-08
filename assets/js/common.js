@@ -132,6 +132,7 @@
       list.forEach(function (i) { if (i.id === id) { i.qty = Math.min(99, i.qty + (qty || 1)); found = true; } });
       if (!found) list.push({ id: id, qty: qty || 1 });
       writeCart(list, true);
+      ring();
     },
     set: function (id, qty) {
       writeCart(readCart().map(function (i) { if (i.id === id) i.qty = qty; return i; }), false);
@@ -282,11 +283,101 @@
       if (!sheet.contains(e.target) || e.target.closest('[data-drawer-close]') || e.target.closest('a[href]')) close();
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && isShown()) close(); });
-    // панель фильтров открыта на телефоне, а окно расширили до компьютерного — закрываем сразу
-    window.matchMedia('(min-width: 900px)').addEventListener('change', function (m) {
+    // панель открыта на узком экране, а окно расширили до широкого — закрываем сразу
+    // (фильтры становятся колонкой с 900px, меню — строкой в шапке с 1100px)
+    window.matchMedia(drawer.classList.contains('drawer--filters') ? '(min-width: 900px)' : '(min-width: 1100px)').addEventListener('change', function (m) {
       if (m.matches && isShown()) { opened = true; onClosed(); }
     });
     return { open: open, close: close, isOpen: function () { return opened; } };
+  }
+
+  // ------------------------------------------------------------ звон хрусталя (по желанию)
+  // Не аудиофайл, а синтез: несколько синусоид с соотношением частот, как у звенящего бокала
+  // (1 : 2,83 : 5,42 : 8,77), и долгое затухание; вторая, чуть расстроенная, даёт «живое» биение.
+  // По умолчанию выключен, переключатель — в подвале; выбор помнит браузер.
+  var RING_KEY = 'cristallo-ring';
+  var ringPref = null, ringCtx = null, ringLast = 0;
+  function ringOn() {
+    if (ringPref === null) { try { ringPref = localStorage.getItem(RING_KEY) === '1'; } catch (e) { ringPref = false; } }
+    return ringPref;
+  }
+  function setRing(on) {
+    ringPref = !!on;
+    try { localStorage.setItem(RING_KEY, on ? '1' : '0'); } catch (e) {}
+  }
+  function ring(force) {
+    if (!force && !ringOn()) return;
+    var now = Date.now();
+    if (now - ringLast < 150) return;   // комплект из трёх предметов — один звон, а не три
+    ringLast = now;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      ringCtx = ringCtx || new AC();
+      if (ringCtx.state === 'suspended') ringCtx.resume();
+      var t = ringCtx.currentTime + 0.02;
+      var out = ringCtx.createGain();
+      out.gain.setValueAtTime(0.0001, t);
+      out.gain.exponentialRampToValueAtTime(0.08, t + 0.005);
+      out.gain.exponentialRampToValueAtTime(0.0001, t + 2.8);
+      out.connect(ringCtx.destination);
+      var f = 1318.5;   // ми шестой октавы — звон тонкого бокала
+      [[1, 1, 2.8], [1.006, 0.5, 2.4], [2.83, 0.32, 1.4], [5.42, 0.14, 0.8], [8.77, 0.06, 0.45]].forEach(function (p) {
+        var o = ringCtx.createOscillator(), g = ringCtx.createGain();
+        o.type = 'sine';
+        o.frequency.value = f * p[0];
+        g.gain.setValueAtTime(p[1], t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + p[2]);
+        o.connect(g); g.connect(out);
+        o.start(t); o.stop(t + p[2] + 0.05);
+      });
+    } catch (e) { /* без звука — не беда */ }
+  }
+
+  // переключатель в нижней строке подвала: бокал со звуковыми волнами и маленький тумблер
+  var RING_ICON = '<svg class="ring-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M6.5 3.5h7c.5 4-1 6.9-3.5 7.7C7.5 10.4 6 7.5 6.5 3.5z"/><path d="M10 11.2v7.6M7 20.5h6"/>' +
+    '<path class="ring-w" d="M16.4 6.2a3.6 3.6 0 0 1 0 4.6M18.8 4.2a6.6 6.6 0 0 1 0 8.6"/></svg>';
+  function ringToggle() {
+    var row = document.querySelector('.footer-bottom');
+    if (!row || row.querySelector('.ring-toggle') || !(window.AudioContext || window.webkitAudioContext)) return;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'ring-toggle';
+    b.setAttribute('aria-pressed', ringOn() ? 'true' : 'false');
+    b.innerHTML = RING_ICON + '<span>Звон хрусталя<span class="visually-hidden"> при добавлении в корзину</span></span><span class="ring-switch" aria-hidden="true"></span>';
+    b.addEventListener('click', function () {
+      var on = b.getAttribute('aria-pressed') !== 'true';
+      setRing(on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (on) ring(true);   // включили — сразу слышно, как это звучит
+    });
+    row.insertBefore(b, row.lastElementChild);
+  }
+
+  // ------------------------------------------------------------ световые пятна на тёмных панелях
+  // Как свет сквозь бокал на скатерти: размытые пятна медленно плывут, поверх — тонкая сеть бликов,
+  // широкий луч чуть тянется за курсором. Только украшение: aria-hidden, мышь проходит насквозь.
+  var CAUSTICS = '<span class="caustics" aria-hidden="true"><i class="net"></i><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="beam"></i></span>';
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  function caustics() {
+    document.querySelectorAll('.hero-slides, .story, .site-footer, [data-caustics]').forEach(function (host) {
+      if (host.querySelector(':scope > .caustics')) return;
+      host.insertAdjacentHTML('afterbegin', CAUSTICS);
+      if (host.classList.contains('hero-slides')) host.firstElementChild.classList.add('caustics--soft');   // поверх фото — тише
+      var raf = 0, x = 0;
+      host.addEventListener('pointermove', function (e) {
+        if (!finePointer.matches || reducedMotion.matches) return;
+        x = e.clientX;
+        if (raf) return;
+        raf = requestAnimationFrame(function () {
+          raf = 0;
+          var r = host.getBoundingClientRect();
+          host.style.setProperty('--cx', Math.max(0, Math.min(1, (x - r.left) / Math.max(1, r.width))).toFixed(3));
+        });
+      }, { passive: true });
+      host.addEventListener('pointerleave', function () { host.style.removeProperty('--cx'); });   // луч плавно возвращается
+    });
   }
 
   // ------------------------------------------------------------ значки: тонкая линия, 24×24
@@ -375,6 +466,8 @@
     markCurrentPage();
     document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = new Date().getFullYear(); });
     document.querySelectorAll('.drawer[popover]').forEach(function (d) { drawers[d.id] = setupDrawer(d); });
+    caustics();
+    ringToggle();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 

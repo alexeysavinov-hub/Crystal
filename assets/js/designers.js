@@ -78,6 +78,9 @@
     if (sum) sum.innerHTML = '<span class="chip">' + list.length + ' ' + Shop.plural(list.length, 'дизайнер', 'дизайнера', 'дизайнеров') + '</span>' +
       '<span class="chip">' + esc(count(works)) + ' в каталоге</span>';
     box.innerHTML = list.map(sealHtml).join('');
+    // по 4 или по 5 в ряд — как меньше рядов, а при равенстве — как меньше пустых мест в последнем (12 → 4×3)
+    var n = list.length;
+    box.style.setProperty('--cols-wide', Math.ceil(n / 5) < Math.ceil(n / 4) ? 5 : 4);
   }).catch(function (err) {
     fail(err && err.missing
       ? 'Запустите синхронизацию: <code>python3 app/sync.py</code> — после первого запуска здесь появятся дизайнеры.'
