@@ -153,7 +153,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .mk-f3 { stroke-dasharray: 32; --len: 32; }
 @keyframes mk-draw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
 @keyframes mk-glint { 0%, 100% { color: var(--mark-ink); } 35% { color: var(--glint); } }
-@keyframes mk-name { from { opacity: 0; letter-spacing: .55em; transform: translateY(4px); } to { opacity: 1; letter-spacing: .32em; transform: none; } }
+/* надпись проявляется из лёгкой дымки, ширина не меняется — меню по сторонам стоит на месте */
+@keyframes mk-name { from { opacity: 0; transform: translateY(4px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
 .mark { --mark-ink: var(--ink); --glint: var(--neodymium); }
 @media (prefers-reduced-motion: no-preference) {
   .mk-o { animation: mk-draw 1.1s cubic-bezier(.4, 0, .2, 1) .15s backwards; }
@@ -167,6 +168,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .mark:hover .mk-h2 { animation: mk-glint 1s ease .12s; }
   .mark:hover .mk-h3 { animation: mk-glint 1s ease .24s; }
   .site-header .mark-name { animation: mk-name 1s var(--ease-out) 1.35s backwards; }
+  /* знак рисуется только на первой открытой странице; при переходах по сайту он сразу готов (класс ставит скрипт в <head>) */
+  .intro-seen .mk-o, .intro-seen .mk-f1, .intro-seen .mk-f2, .intro-seen .mk-f3,
+  .intro-seen .mk-l1, .intro-seen .mk-l2, .intro-seen .mk-l3, .intro-seen .site-header .mark-name { animation: none; }
 }
 .cart-link { display: inline-flex; align-items: center; gap: 8px; }
 .cart-count {
@@ -875,7 +879,7 @@ a.set-name:hover { text-decoration: underline; text-underline-offset: 4px; text-
 @keyframes net-drift { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(-5%, 3%) rotate(3deg); } }
 @keyframes beam-sway { from { rotate: 14deg; } to { rotate: 22deg; } }
 
-/* «Звон хрусталя» — переключатель в нижней строке подвала; по умолчанию выключен */
+/* «Звон хрусталя» — переключатель в нижней строке подвала; по умолчанию включён */
 .ring-toggle { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin: -11px 0; padding: 0; border: 0; background: none; color: inherit; font-size: inherit; cursor: pointer; transition: color .3s ease; }
 .ring-toggle:hover { color: #fff; }
 .ring-toggle:focus-visible { outline-offset: 4px; border-radius: 6px; }
